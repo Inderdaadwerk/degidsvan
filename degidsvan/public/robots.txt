@@ -1,0 +1,4 @@
+User-agent: *
+Disallow: /beheer.html
+Disallow: /zoeken
+Sitemap: https://degidsvan.nl/sitemap.xml

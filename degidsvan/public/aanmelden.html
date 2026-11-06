@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Bedrijf aanmelden | De Gids Van</title>
+<meta name="description" content="Meld uw bedrijf gratis aan in De Gids Van.">
+<link rel="canonical" href="https://degidsvan.nl/aanmelden.html">
+<link rel="icon" href="/logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/gids.css?v=1">
+<meta property="og:title" content="Bedrijf aanmelden | De Gids Van">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://degidsvan.nl/aanmelden.html">
+
+</head>
+<body>
+<a class="skip" href="#inhoud">Naar inhoud</a>
+<header class="kop">
+  <div class="wrap kop-in">
+    <a class="logo" href="/" aria-label="De Gids Van, home"><svg viewBox="0 0 48 48" class="logo-ic" aria-hidden="true"><rect width="48" height="48" rx="13" fill="#0f4c5c"/><path d="M12 15c4-1.6 8-1.2 12 1.4 4-2.6 8-3 12-1.4v19c-4-1.6-8-1.2-12 1.4-4-2.6-8-3-12-1.4z" fill="#fff"/><path d="M24 16.4v19" stroke="#0f4c5c" stroke-width="2"/><circle cx="35" cy="14" r="5.5" fill="#ffc845"/></svg><span>de gids <b>van</b></span></a>
+    <form class="mini-zoek" action="/zoeken" role="search"><input name="wat" value="" placeholder="Wat zoekt u?" aria-label="Wat zoekt u"><input name="waar" value="" placeholder="Plaats" aria-label="Plaats" list="dl-plaatsen"><button aria-label="Zoeken"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg></button></form>
+    <button class="menu-k" aria-label="Menu" aria-expanded="false" onclick="this.parentNode.classList.toggle('open');this.setAttribute('aria-expanded',this.parentNode.classList.contains('open'))"><i></i><i></i><i></i></button>
+    <nav class="hoofdnav">
+      <a href="/plaatsen">Plaatsen</a>
+      <a href="/categorieen">Categorieën</a>
+      <a href="/nieuws">Nieuws</a>
+      <a class="knop klein" href="/aanmelden.html">Bedrijf aanmelden</a>
+    </nav>
+  </div>
+</header>
+<main id="inhoud">
+<section class="wrap blok smal tekst">
+<nav class="kruimel" aria-label="Kruimelpad"><a href="/">Home</a> <span>›</span> <span aria-current="page">Bedrijf aanmelden</span></nav>
+<h1>Bedrijf aanmelden</h1>
+<p class="sub">Staat uw bedrijf nog niet in De Gids Van? Meld het gratis aan. Wij controleren de gegevens en zetten uw bedrijf zo snel mogelijk online.</p>
+<form class="form" name="aanmelden" method="POST" action="/bedankt.html" data-netlify="true" netlify-honeypot="bot-veld">
+  <input type="hidden" name="form-name" value="aanmelden"><p class="verborgen"><label>Niet invullen: <input name="bot-veld"></label></p>
+  <label>Bedrijfsnaam<input name="bedrijfsnaam" required maxlength="90"></label>
+  <label>Categorie<select name="categorie" required><option value="">Kies een categorie</option><option value="bakkers">Bakkers</option><option value="kappers">Kappers</option><option value="schoonheidssalons">Schoonheidssalons</option><option value="restaurants">Restaurants</option><option value="cafes">Cafés</option><option value="snackbars">Snackbars</option><option value="supermarkten">Supermarkten</option><option value="slagers">Slagers</option><option value="bloemisten">Bloemisten</option><option value="fietsenwinkels">Fietsenwinkels</option><option value="autogarages">Autogarages</option><option value="installateurs">Installateurs</option><option value="schilders">Schilders</option><option value="bouwbedrijven">Bouwbedrijven</option><option value="hoveniers">Hoveniers</option><option value="schoonmaakbedrijven">Schoonmaakbedrijven</option><option value="makelaars">Makelaars</option><option value="accountants">Accountants</option><option value="advocaten">Advocaten</option><option value="verzekeringen">Verzekeringen</option><option value="tandartsen">Tandartsen</option><option value="huisartsen">Huisartsen</option><option value="fysiotherapeuten">Fysiotherapeuten</option><option value="apotheken">Apotheken</option><option value="dierenartsen">Dierenartsen</option><option value="rijscholen">Rijscholen</option><option value="opticiens">Opticiens</option><option value="kledingwinkels">Kledingwinkels</option><option value="juweliers">Juweliers</option><option value="woonwinkels">Woonwinkels</option><option value="bouwmarkten">Bouwmarkten</option><option value="elektronicawinkels">Elektronicawinkels</option><option value="hotels">Hotels</option><option value="sportscholen">Sportscholen</option><option value="drukkerijen">Drukkerijen</option><option value="fotografen">Fotografen</option><option value="it-bedrijven">IT-bedrijven</option><option value="reisbureaus">Reisbureaus</option><option value="uitzendbureaus">Uitzendbureaus</option><option value="architecten">Architecten</option><option value="anders">Anders</option></select></label>
+  <div class="twee"><label>Straat en huisnummer<input name="adres" required maxlength="100"></label><label>Postcode<input name="postcode" required maxlength="8"></label></div>
+  <div class="twee"><label>Plaats<input name="plaats" required maxlength="60"></label><label>Telefoon<input name="telefoon" type="tel" maxlength="30"></label></div>
+  <div class="twee"><label>E-mailadres<input name="email" type="email" required maxlength="120"></label><label>Website <span class="klein-t">(optioneel)</span><input name="website" maxlength="200"></label></div>
+  <label>Uw naam<input name="contactpersoon" required maxlength="80"></label>
+  <label>Korte omschrijving <span class="klein-t">(optioneel)</span><textarea name="omschrijving" maxlength="1000"></textarea></label>
+  <label class="check"><input type="checkbox" name="meer-info" value="ja"> <span>Ik wil ook informatie over een uitgebreide vermelding met foto's, logo en extra zichtbaarheid.</span></label>
+  <label class="check"><input type="checkbox" required> <span>Ik ga akkoord met de verwerking van deze gegevens volgens de <a href="/privacy.html" target="_blank">privacyverklaring</a>.</span></label>
+  <button class="knop groot" type="submit">Aanmelding versturen</button>
+</form>
+</section>
+</main>
+<footer class="voet">
+  <div class="wrap voet-in">
+    <div>
+      <a class="logo licht" href="/"><svg viewBox="0 0 48 48" class="logo-ic" aria-hidden="true"><rect width="48" height="48" rx="13" fill="#0f4c5c"/><path d="M12 15c4-1.6 8-1.2 12 1.4 4-2.6 8-3 12-1.4v19c-4-1.6-8-1.2-12 1.4-4-2.6-8-3-12-1.4z" fill="#fff"/><path d="M24 16.4v19" stroke="#0f4c5c" stroke-width="2"/><circle cx="35" cy="14" r="5.5" fill="#ffc845"/></svg><span>de gids <b>van</b></span></a>
+      <p>De gids voor lokale bedrijven, winkels en vakmensen in heel Nederland.</p>
+    </div>
+    <div><h3>Populair</h3><a href="/categorie/kappers">Kappers</a><a href="/categorie/restaurants">Restaurants</a><a href="/categorie/installateurs">Installateurs</a><a href="/categorie/autogarages">Autogarages</a><a href="/categorie/bakkers">Bakkers</a><a href="/categorie/schoonheidssalons">Schoonheidssalons</a></div>
+    <div><h3>Voor bedrijven</h3><a href="/aanmelden.html">Bedrijf aanmelden</a><a href="/wijzigen.html">Vermelding wijzigen of verwijderen</a><a href="/contact.html">Contact</a></div>
+    <div><h3>Informatie</h3><a href="/over-ons.html">Over De Gids Van</a><a href="/privacy.html">Privacy</a><a href="/disclaimer.html">Disclaimer</a><a href="/voorwaarden.html">Voorwaarden</a></div>
+  </div>
+  <div class="wrap voet-onder">
+    <span>© 2026 De Gids Van</span>
+    <span>Basisgegevens: © <a href="https://www.openstreetmap.org/copyright" rel="noopener">OpenStreetMap-bijdragers</a> (ODbL). Nieuws: Rijksoverheid (CC0).</span>
+  </div>
+</footer>
+</body>
+</html>
