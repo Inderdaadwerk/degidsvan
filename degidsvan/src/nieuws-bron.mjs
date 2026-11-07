@@ -67,8 +67,10 @@ export async function haalNieuws() {
     try {
       const r = await fetch(f.url, { headers: { "user-agent": "DeGidsVan/1.0 (degidsvan.nl)", accept: "application/json" } });
       if (!r.ok) { log.push(f.url + " HTTP " + r.status); continue; }
-      const items = parseApi(await r.json(), f.filter);
-      log.push(f.url + " " + items.length);
+      const txt = await r.text();
+      let data; try { data = JSON.parse(txt); } catch { log.push(f.url + " geen JSON: " + txt.slice(0, 120).replace(/\s+/g, " ")); continue; }
+      const items = parseApi(data, f.filter);
+      log.push(f.url + " " + items.length + (items.length ? "" : " (structuur: " + JSON.stringify(data).slice(0, 160) + ")"));
       for (const it of items) if (!map.has(it.url)) map.set(it.url, it);
     } catch (e) { log.push(f.url + " " + e.message); }
   }
@@ -84,7 +86,8 @@ export async function haalNieuws() {
   const eigen = bestaand.filter((n) => n.eigen);
   const alle = [...map.values()].filter((n) => !n.eigen).concat(eigen)
     .sort((a, b) => b.datum.localeCompare(a.datum)).slice(0, 120);
-  await fotos(alle, log);
+  console.log("nieuws: bronnen " + JSON.stringify(log));
+  try { await fotos(alle, log); } catch (e) { log.push("foto's: " + e.message); }
   /* unieke id's */
   const ids = new Set();
   for (const n of alle) { let id = n.id || "bericht"; let k = 2; while (ids.has(id)) id = n.id + "-" + k++; n.id = id; ids.add(id); }
