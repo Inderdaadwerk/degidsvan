@@ -10,7 +10,7 @@ const FEEDS = [
 const RELEVANT = /ondernem|bedrijf|mkb|zzp|zelfstandig|werkgever|belasting|btw|kvk|economi|winkel|horeca|ondernemer|loon|subsidie|regel|vergunning|energie|personeel|arbeidsmarkt|innovatie|export|bouw|woning|vakantie|pensioen|minimumloon/i;
 
 const ent = (s) => s.replace(/&nbsp;/g, " ").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, '"').replace(/&#39;|&apos;/g, "'").replace(/&#(\d+);/g, (_, n) => String.fromCharCode(+n)).replace(/&amp;/g, "&");
-const ontsnap = (s) => ent(ent(String(s || "").replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g, "$1")).replace(/<[^>]+>/g, " ")).replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
+const ontsnap = (s) => ent(ent(String(s || "").replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g, "$1")).replace(/<[^>]+>/g, " ")).replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").replace(/\s+([.,;:!?])/g, "$1").trim();
 const tag = (x, t) => { const m = x.match(new RegExp(`<${t}[^>]*>([\\s\\S]*?)</${t}>`, "i")); return m ? m[1] : ""; };
 
 export function parseRss(xml, bron, filter) {
@@ -35,10 +35,46 @@ export function parseRss(xml, bron, filter) {
   return items;
 }
 
+/* Open data-API van de Rijksoverheid (CC0) */
+const API = [
+  { url: "https://opendata.rijksoverheid.nl/v1/infotypes/news/subjects/ondernemen-en-innovatie/?output=json&rows=40", filter: false },
+  { url: "https://opendata.rijksoverheid.nl/v1/infotypes/news/subjects/belastingen-voor-ondernemers/?output=json&rows=20", filter: false },
+  { url: "https://opendata.rijksoverheid.nl/v1/infotypes/news?output=json&rows=100", filter: true }
+];
+function datum(v) {
+  if (!v) return new Date().toISOString();
+  const s = String(v);
+  const m = s.match(/^(\d{2})-(\d{2})-(\d{4})/);
+  const d = m ? new Date(`${m[3]}-${m[2]}-${m[1]}T12:00:00Z`) : new Date(s);
+  return isNaN(d) ? new Date().toISOString() : d.toISOString();
+}
+export function parseApi(json, filter) {
+  const lijst = Array.isArray(json) ? json : json?.items || json?.result || json?.documents || [];
+  const uit = [];
+  for (const x of lijst) {
+    const titel = ontsnap(x.title || x.titel);
+    const url = String(x.canonical || x.url || "");
+    const tekst = ontsnap(x.introduction || x.introductie || x.description || "");
+    if (!titel || !/^https:\/\//.test(url)) continue;
+    if (filter && !RELEVANT.test(titel + " " + tekst)) continue;
+    uit.push({ id: slug(titel).slice(0, 70), titel: titel.slice(0, 200), tekst: tekst.slice(0, 1200), url, datum: datum(x.frontenddate || x.issued || x.available || x.lastmodified), bron: "Rijksoverheid" });
+  }
+  return uit;
+}
+
 export async function haalNieuws() {
   const bestaand = await lees("nieuws", []);
   const map = new Map(bestaand.map((n) => [n.url, n]));
   const log = [];
+  for (const f of API) {
+    try {
+      const r = await fetch(f.url, { headers: { "user-agent": "DeGidsVan/1.0 (degidsvan.nl)", accept: "application/json" } });
+      if (!r.ok) { log.push(f.url + " HTTP " + r.status); continue; }
+      const items = parseApi(await r.json(), f.filter);
+      log.push(f.url + " " + items.length);
+      for (const it of items) if (!map.has(it.url)) map.set(it.url, it);
+    } catch (e) { log.push(f.url + " " + e.message); }
+  }
   for (const f of FEEDS) {
     try {
       const r = await fetch(f.url, { headers: { "user-agent": "DeGidsVan/1.0 (degidsvan.nl)", accept: "application/rss+xml, application/xml, text/xml" } });
