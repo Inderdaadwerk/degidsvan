@@ -136,12 +136,12 @@ body{background:var(--mist)}
 
   function toon(){
     var tot=D.plaatsen.reduce(function(s,p){return s+(p.aantal||0)},0);
-    $('#stat').textContent=D.plaatsen.length+' plaatsen · '+tot.toLocaleString('nl-NL')+' basisvermeldingen · '+D.profielen.length+' klantprofielen';
+    $('#stat').textContent=D.plaatsen.length+' plaatsen · '+tot.toLocaleString('nl-NL')+' basisvermeldingen · '+D.profielen.length+' klantprofielen · opslag: '+D.opslag;
     $('#b-pl').innerHTML=D.plaatsen.map(function(p){return'<option value="'+esc(p.slug)+'">'+esc(p.naam)+'</option>'}).join('');
     var f=$('#pf');if(!f.cat.options.length)f.cat.innerHTML=D.cats.map(function(c){return'<option value="'+c.slug+'">'+esc(c.naam)+'</option>'}).join('');
     if(!$('#gem').options.length)$('#gem').innerHTML=D.gemeenten.map(function(g){return'<option>'+esc(g)+'</option>'}).join('');
     lijstProfielen();toonFotos();
-    $('#imp-log').textContent='Volgende in de rij: '+(D.gemeenten[D.status.volgende||0]||'-')+'\n\n'+(D.status.log||[]).map(function(l){return new Date(l.t).toLocaleString('nl-NL')+'  '+l.g+'  '+(l.fout?'FOUT: '+l.fout:l.n+' bedrijven')}).join('\n');
+    $('#imp-log').textContent='Gemeenten in de rij: '+(D.status.totaal||'-')+' · volgende nr. '+((D.status.volgende||0)+1)+'\n\n'+(D.status.log||[]).map(function(l){return new Date(l.t).toLocaleString('nl-NL')+'  '+l.g+'  '+(l.fout?'FOUT: '+l.fout:l.n+' bedrijven')}).join('\n');
     $('#pl-lijst').innerHTML=D.plaatsen.map(function(p){return'<div class="it"><span><b>'+esc(p.naam)+'</b> <small>'+(p.aantal||0)+' bedrijven · '+new Date(p.bijgewerkt).toLocaleDateString('nl-NL')+'</small></span><a href="/plaats/'+p.slug+'" target="_blank">Bekijk</a></div>'}).join('')||'<p class="sub">Nog geen plaatsen. Start een import.</p>';
     $('#nw-log').textContent=D.nlog?('Laatst: '+new Date(D.nlog.tijd).toLocaleString('nl-NL')+'\n'+D.nlog.log.join('\n')):'Nog niet opgehaald.';
     $('#nw-lijst').innerHTML=D.nieuws.map(function(n){return'<div class="it"><span><b>'+esc(n.titel)+'</b><br><small>'+new Date(n.datum).toLocaleDateString('nl-NL')+' · '+esc(n.bron)+'</small></span><span class="rij" style="margin:0"><a href="/nieuws/'+esc(n.id)+'" target="_blank">Bekijk</a><button class="knop klein lijn" data-nw="'+esc(n.id)+'">Verwijder</button></span></div>'}).join('');

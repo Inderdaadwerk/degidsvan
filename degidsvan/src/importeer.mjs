@@ -78,3 +78,18 @@ export async function importeer(gemeente) {
   await schrijf("plaatsen", lijst);
   return { gemeente, aantal: bedrijven.length };
 }
+
+/* Alle gemeenten van Nederland uit OpenStreetMap */
+export async function alleGemeenten() {
+  const q = `[out:json][timeout:120];area["ISO3166-1"="NL"][admin_level=2]->.nl;rel(area.nl)["boundary"="administrative"]["admin_level"="8"]["name"];out tags;`;
+  for (const url of OVERPASS) {
+    try {
+      const r = await fetch(url, { method: "POST", body: "data=" + encodeURIComponent(q), headers: { "content-type": "application/x-www-form-urlencoded", "user-agent": "DeGidsVan/1.0 (degidsvan.nl)" } });
+      if (!r.ok) continue;
+      const d = await r.json();
+      const namen = [...new Set((d.elements || []).map((e) => e.tags?.name).filter(Boolean))].sort((a, b) => a.localeCompare(b, "nl"));
+      if (namen.length) return namen;
+    } catch {}
+  }
+  throw new Error("Overpass niet bereikbaar");
+}

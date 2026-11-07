@@ -15,7 +15,7 @@ export default async (req) => {
   if (!key || req.headers.get("x-key") !== key) return json({ fout: "Geen toegang" }, 401);
   if (req.method === "GET") {
     const [profielen, ps, status, nlog, nw, weg, tf] = await Promise.all([lees("profielen", []), plaatsen(), lees("import-status", { volgende: 0, log: [] }), lees("nieuws-log", null), lees("nieuws", []), lees("verwijderd", []), lees("thema-fotos", {}).then((s) => (THEMAS.some(([, t]) => !(s[t] || []).length) ? standaardFotos(s) : s))]);
-    return json({ profielen, plaatsen: ps.map((p) => ({ slug: p.slug, naam: p.naam, aantal: p.aantal, bijgewerkt: p.bijgewerkt })), gemeenten: GEMEENTEN, cats: Object.values(CAT).map((c) => ({ slug: c.slug, naam: c.naam.charAt(0).toUpperCase() + c.naam.slice(1) })), status, nlog, nieuws: nw.slice(0, 40), verwijderd: weg.length, themas: THEMAS.map(([, t]) => t), themaFotos: tf, pexels: !!process.env.PEXELS_API_KEY });
+    return json({ profielen, plaatsen: ps.map((p) => ({ slug: p.slug, naam: p.naam, aantal: p.aantal, bijgewerkt: p.bijgewerkt })), gemeenten: GEMEENTEN, cats: Object.values(CAT).map((c) => ({ slug: c.slug, naam: c.naam.charAt(0).toUpperCase() + c.naam.slice(1) })), status, nlog, nieuws: nw.slice(0, 40), verwijderd: weg.length, themas: THEMAS.map(([, t]) => t), themaFotos: tf, pexels: !!process.env.PEXELS_API_KEY, opslag: await store().list().then((l) => l.blobs.length).catch((e) => "fout: " + e.message) });
   }
   const b = await req.json().catch(() => ({}));
   const a = b.actie;
