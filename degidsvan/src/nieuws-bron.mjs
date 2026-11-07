@@ -31,30 +31,39 @@ export function parseRss(xml, bron, filter) {
 }
 
 /* Open data-API van de Rijksoverheid (CC0) */
-const OD = "https://opendata.rijksoverheid.nl/v1/sources/rijksoverheid/infotypes/news";
+/* Nieuws via open data (CC0): RVO (Rijksdienst voor Ondernemend Nederland) */
 const API = [
-  { url: OD + "/subjects/ondernemen-en-innovatie?output=json&rows=40", filter: false },
-  { url: OD + "/subjects/belastingen-voor-ondernemers?output=json&rows=20", filter: false },
-  { url: OD + "/subjects/werkgevers?output=json&rows=20", filter: false },
-  { url: OD + "?output=json&rows=150", filter: true }
+  { url: "https://www.rvo.nl/api/v1/opendata/articles", bron: "RVO", basis: "https://www.rvo.nl", filter: false },
+  { url: "https://www.rvo.nl/api/v1/opendata/articles?page=1", bron: "RVO", basis: "https://www.rvo.nl", filter: false }
 ];
 function datum(v) {
-  if (!v) return new Date().toISOString();
+  if (v == null || v === "") return new Date().toISOString();
+  if (typeof v === "number") { const d = new Date(v < 1e12 ? v * 1000 : v); return isNaN(d) ? new Date().toISOString() : d.toISOString(); }
   const s = String(v);
   const m = s.match(/^(\d{2})-(\d{2})-(\d{4})/);
   const d = m ? new Date(`${m[3]}-${m[2]}-${m[1]}T12:00:00Z`) : new Date(s);
   return isNaN(d) ? new Date().toISOString() : d.toISOString();
 }
-export function parseApi(json, filter) {
-  const lijst = Array.isArray(json) ? json : json?.items || json?.result || json?.documents || [];
+function zoekLijst(j, diepte = 0) {
+  if (Array.isArray(j) && j.length && typeof j[0] === "object") return j;
+  if (!j || typeof j !== "object" || diepte > 4) return null;
+  for (const k of ["data", "items", "results", "result", "articles", "documents", "nodes", "rows"]) { const l = zoekLijst(j[k], diepte + 1); if (l) return l; }
+  for (const v of Object.values(j)) { const l = zoekLijst(v, diepte + 1); if (l) return l; }
+  return null;
+}
+const veld = (x, namen) => { for (const n of namen) { let v = x; for (const p of n.split(".")) v = v?.[p]; if (v != null && v !== "") return Array.isArray(v) ? v[0]?.value ?? v[0] : (typeof v === "object" && "value" in v ? v.value : v); } return ""; };
+export function parseApi(json, f) {
+  const lijst = zoekLijst(json) || [];
   const uit = [];
-  for (const x of lijst) {
-    const titel = ontsnap(x.title || x.titel);
-    const url = String(x.canonical || x.url || "");
-    const tekst = ontsnap(x.introduction || x.introductie || x.description || "");
+  for (const raw of lijst) {
+    const x = raw.attributes ? { ...raw, ...raw.attributes } : raw;
+    const titel = ontsnap(veld(x, ["title", "titel", "name", "label", "headline"]));
+    let url = String(veld(x, ["canonical", "url", "link", "path.alias", "path", "href", "uri"]) || "");
+    if (url.startsWith("/")) url = (f.basis || "") + url;
+    const tekst = ontsnap(veld(x, ["introduction", "intro", "summary", "teaser", "lead", "description", "field_intro", "body.summary", "body"]));
     if (!titel || !/^https:\/\//.test(url)) continue;
-    if (filter && !RELEVANT.test(titel + " " + tekst)) continue;
-    uit.push({ id: slug(titel).slice(0, 70), titel: titel.slice(0, 200), tekst: tekst.slice(0, 1200), url, datum: datum(x.frontenddate || x.issued || x.available || x.lastmodified), bron: "Rijksoverheid" });
+    if (f.filter && !RELEVANT.test(titel + " " + tekst)) continue;
+    uit.push({ id: slug(titel).slice(0, 70), titel: titel.slice(0, 200), tekst: tekst.slice(0, 1200), url, datum: datum(veld(x, ["frontenddate", "date", "publicationDate", "published", "publication_date", "created", "changed", "issued", "available", "lastmodified"])), bron: f.bron });
   }
   return uit;
 }
@@ -69,7 +78,7 @@ export async function haalNieuws() {
       if (!r.ok) { log.push(f.url + " HTTP " + r.status); continue; }
       const txt = await r.text();
       let data; try { data = JSON.parse(txt); } catch { log.push(f.url + " geen JSON: " + txt.slice(0, 120).replace(/\s+/g, " ")); continue; }
-      const items = parseApi(data, f.filter);
+      const items = parseApi(data, f);
       log.push(f.url + " " + items.length + (items.length ? "" : " (structuur: " + JSON.stringify(data).slice(0, 160) + ")"));
       for (const it of items) if (!map.has(it.url)) map.set(it.url, it);
     } catch (e) { log.push(f.url + " " + e.message); }
