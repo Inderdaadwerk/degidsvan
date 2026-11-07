@@ -1,12 +1,7 @@
 import { lees, schrijf, slug, store } from "./gids.mjs";
 
 /* Openbare bronnen (Rijksoverheid: CC0). Probeert ze op volgorde en voegt samen. */
-const FEEDS = [
-  { url: "https://feeds.rijksoverheid.nl/onderwerpen/ondernemen-en-innovatie/nieuws.rss", bron: "Rijksoverheid", filter: false },
-  { url: "https://feeds.rijksoverheid.nl/onderwerpen/belastingen-voor-ondernemers/nieuws.rss", bron: "Rijksoverheid", filter: false },
-  { url: "https://feeds.rijksoverheid.nl/onderwerpen/werkgevers/nieuws.rss", bron: "Rijksoverheid", filter: false },
-  { url: "https://feeds.rijksoverheid.nl/nieuws.rss", bron: "Rijksoverheid", filter: true }
-];
+const FEEDS = [];
 const RELEVANT = /ondernem|bedrijf|mkb|zzp|zelfstandig|werkgever|belasting|btw|kvk|economi|winkel|horeca|ondernemer|loon|subsidie|regel|vergunning|energie|personeel|arbeidsmarkt|innovatie|export|bouw|woning|vakantie|pensioen|minimumloon/i;
 
 const ent = (s) => s.replace(/&nbsp;/g, " ").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, '"').replace(/&#39;|&apos;/g, "'").replace(/&#(\d+);/g, (_, n) => String.fromCharCode(+n)).replace(/&amp;/g, "&");
@@ -36,10 +31,12 @@ export function parseRss(xml, bron, filter) {
 }
 
 /* Open data-API van de Rijksoverheid (CC0) */
+const OD = "https://opendata.rijksoverheid.nl/v1/sources/rijksoverheid/infotypes/news";
 const API = [
-  { url: "https://opendata.rijksoverheid.nl/v1/infotypes/news/subjects/ondernemen-en-innovatie/?output=json&rows=40", filter: false },
-  { url: "https://opendata.rijksoverheid.nl/v1/infotypes/news/subjects/belastingen-voor-ondernemers/?output=json&rows=20", filter: false },
-  { url: "https://opendata.rijksoverheid.nl/v1/infotypes/news?output=json&rows=100", filter: true }
+  { url: OD + "/subjects/ondernemen-en-innovatie?output=json&rows=40", filter: false },
+  { url: OD + "/subjects/belastingen-voor-ondernemers?output=json&rows=20", filter: false },
+  { url: OD + "/subjects/werkgevers?output=json&rows=20", filter: false },
+  { url: OD + "?output=json&rows=150", filter: true }
 ];
 function datum(v) {
   if (!v) return new Date().toISOString();
