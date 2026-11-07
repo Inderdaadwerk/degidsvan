@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Beheer – De Gids Van</title>
+<link rel="icon" href="/logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/gids.css?v=1">
+<style>
+body{background:var(--mist)}
+.bh{max-width:1180px;margin:0 auto;padding:28px 24px 80px}
+.bh-kop{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:22px}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:18px}
+.tabs button{border:0;background:#fff;border:1px solid var(--lijn);padding:9px 16px;border-radius:999px;font:inherit;font-weight:600;cursor:pointer;color:var(--text)}
+.tabs button.aan{background:var(--petrol);color:#fff;border-color:var(--petrol)}
+.paneel{background:#fff;border:1px solid var(--lijn);border-radius:18px;padding:24px;margin-bottom:18px}
+.paneel h2{font-size:20px;margin-bottom:14px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.grid3{display:grid;grid-template-columns:2fr 1fr 1fr;gap:12px}
+.bh label{display:grid;gap:4px;font-size:13.5px;font-weight:600;color:var(--ink)}
+.bh input,.bh select,.bh textarea{font:inherit;font-size:15px;padding:9px 12px;border:1px solid #cdd8d7;border-radius:10px;width:100%;background:#fff}
+.bh textarea{min-height:90px}
+.rij{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:12px}
+.lijst{display:grid;gap:8px}
+.lijst .it{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 14px;border:1px solid var(--lijn);border-radius:12px;font-size:14.5px}
+.lijst .it b{color:var(--ink)}
+.lijst .it small{color:var(--muted)}
+.tag{font-size:12px;font-weight:600;padding:2px 8px;border-radius:999px;background:var(--petrol-l);color:var(--petrol)}
+.tag.plus{background:#fff2c9;color:#7a5600}
+.tag.uit{background:#fde2e1;color:#9b1c1c}
+.melding{padding:10px 14px;border-radius:10px;background:#e7f4ee;color:#1e5a40;font-size:14.5px;margin-top:10px}
+.melding.fout{background:#fde2e1;color:#9b1c1c}
+.log{font:13px/1.5 ui-monospace,Menlo,monospace;background:var(--mist);border-radius:10px;padding:12px;max-height:280px;overflow:auto;white-space:pre-wrap}
+.vb{width:64px;height:64px;object-fit:contain;border:1px solid var(--lijn);border-radius:10px;background:#fff}
+.inlog{max-width:420px;margin:12vh auto}
+[hidden]{display:none!important}
+@media(max-width:760px){.grid2,.grid3{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="bh">
+  <div class="inlog paneel" id="inlog">
+    <h2>Beheer De Gids Van</h2>
+    <label>Beheersleutel<input id="sleutel" type="password" autocomplete="current-password"></label>
+    <div class="rij"><button class="knop" id="in">Inloggen</button></div>
+    <div id="in-m"></div>
+  </div>
+
+  <div id="app" hidden>
+    <div class="bh-kop"><a class="logo" href="/" target="_blank"><img src="/logo.svg" width="36" height="36" alt=""><span>de gids <b>van</b></span></a><span id="stat" class="sub" style="margin:0"></span></div>
+    <div class="tabs"><button data-t="profielen" class="aan">Klantprofielen</button><button data-t="import">Bedrijven importeren</button><button data-t="nieuws">Nieuws</button><button data-t="fotos">Nieuwsfoto's</button><button data-t="weg">Vermelding verwijderen</button></div>
+
+    <section data-p="profielen">
+      <div class="paneel">
+        <h2 id="f-titel">Nieuw klantprofiel</h2>
+        <form id="pf">
+          <input type="hidden" name="id"><input type="hidden" name="osm">
+          <div class="grid3"><label>Bedrijfsnaam*<input name="naam" required></label><label>Categorie*<select name="cat" required></select></label><label>Plaats (gemeente)*<input name="plaats" list="b-pl" required></label></div>
+          <div class="grid3" style="margin-top:12px"><label>Straat<input name="straat"></label><label>Huisnummer<input name="nr"></label><label>Postcode<input name="pc"></label></div>
+          <div class="grid3" style="margin-top:12px"><label>Woonplaats (op adres)<input name="woonplaats"></label><label>Telefoon<input name="tel"></label><label>E-mail<input name="email" type="email"></label></div>
+          <div class="grid2" style="margin-top:12px"><label>Website<input name="web"></label><label>Korte zin (in zoekresultaten)<input name="kort" maxlength="160"></label></div>
+          <label style="margin-top:12px">Omschrijving<textarea name="omschrijving" rows="5"></textarea></label>
+          <div class="grid2" style="margin-top:12px"><label>Diensten (komma's ertussen)<input name="diensten"></label><label>Openingstijden<textarea name="open" rows="2" placeholder="ma–vr 9:00–18:00; za 9:00–17:00"></textarea></label></div>
+          <div class="grid2" style="margin-top:12px">
+            <label>Logo<input type="file" accept="image/*" data-img="logo"><input name="logo" placeholder="of plak een link"></label>
+            <label>Foto<input type="file" accept="image/*" data-img="foto"><input name="foto" placeholder="of plak een link"></label>
+          </div>
+          <div class="grid3" style="margin-top:12px">
+            <label>Pakket<select name="pakket"><option value="basis">Basis</option><option value="plus">Plus (uitgelicht)</option></select></label>
+            <label>Zichtbaar tot (leeg = onbeperkt)<input name="tot" type="date"></label>
+            <label>Klant / notitie (niet zichtbaar)<input name="klant"></label>
+          </div>
+          <div class="rij"><label class="check" style="display:flex;gap:8px;align-items:center"><input type="checkbox" name="uitgelicht" style="width:auto"> Uitgelicht op home</label><label class="check" style="display:flex;gap:8px;align-items:center"><input type="checkbox" name="actief" style="width:auto" checked> Actief</label></div>
+          <div class="rij"><button class="knop" type="submit">Opslaan</button><button class="knop lijn" type="button" id="leeg">Nieuw / leegmaken</button><button class="knop licht" type="button" id="koppel">Bestaande basisvermelding koppelen</button><span id="koppel-t" class="sub" style="margin:0"></span></div>
+          <div id="pf-m"></div>
+        </form>
+        <div id="koppel-l" class="lijst" style="margin-top:12px"></div>
+      </div>
+      <div class="paneel"><h2>Klantprofielen</h2><input id="pzoek" placeholder="Zoek op naam of plaats" style="margin-bottom:12px"><div class="lijst" id="plijst"></div></div>
+    </section>
+
+    <section data-p="import" hidden>
+      <div class="paneel">
+        <h2>Bedrijven importeren</h2>
+        <p class="sub" style="margin-bottom:12px">De import loopt automatisch elk uur (4 gemeenten per keer) en vernieuwt daarna continu. Hier kunt u direct een gemeente laten (her)importeren.</p>
+        <div class="rij"><select id="gem" style="max-width:320px"></select><button class="knop" id="imp1">Deze gemeente importeren</button><button class="knop lijn" id="impv">Volgende ronde starten</button></div>
+        <div id="imp-m"></div>
+      </div>
+      <div class="paneel"><h2>Status</h2><div class="log" id="imp-log"></div></div>
+      <div class="paneel"><h2>Plaatsen in de gids</h2><div class="lijst" id="pl-lijst"></div></div>
+    </section>
+
+    <section data-p="nieuws" hidden>
+      <div class="paneel">
+        <h2>Nieuws</h2>
+        <p class="sub" style="margin-bottom:12px">Nieuws wordt elke 3 uur automatisch opgehaald van de Rijksoverheid. Bij elk nieuw bericht wordt een passend beeld gemaakt.</p>
+        <div class="rij"><button class="knop" id="nw-haal">Nu ophalen</button></div><div id="nw-m"></div>
+        <div class="log" id="nw-log" style="margin-top:12px"></div>
+      </div>
+      <div class="paneel"><h2>Eigen bericht plaatsen</h2><form id="nwf"><label>Titel<input name="titel" required></label><label style="margin-top:12px">Tekst<textarea name="tekst" rows="6" required></textarea></label><div class="rij"><button class="knop">Plaatsen</button></div></form><div id="nwf-m"></div></div>
+      <div class="paneel"><h2>Laatste berichten</h2><div class="lijst" id="nw-lijst"></div></div>
+    </section>
+
+    <section data-p="fotos" hidden>
+      <div class="paneel">
+        <h2>Vaste foto's per onderwerp</h2>
+        <p class="sub" style="margin-bottom:12px">Elk nieuwsbericht krijgt automatisch een foto uit het onderwerp dat erbij past. Upload per onderwerp 2 à 4 foto's, of vul ze in één keer automatisch met gratis stockfoto's.</p>
+        <div class="rij"><button class="knop licht" id="tf-pexels">Automatisch vullen via Pexels</button><span class="sub" style="margin:0" id="tf-m"></span></div>
+      </div>
+      <div id="tf-lijst"></div>
+    </section>
+    <section data-p="weg" hidden>
+      <div class="paneel">
+        <h2>Basisvermelding verwijderen</h2>
+        <p class="sub" style="margin-bottom:12px">Voor bedrijven die niet in de gids willen staan. Ze komen ook bij een volgende import niet terug.</p>
+        <div class="grid2"><label>Plaats<input id="w-pl" list="b-pl"></label><label>Bedrijfsnaam<input id="w-q"></label></div>
+        <div class="rij"><button class="knop" id="w-zoek">Zoeken</button><span class="sub" style="margin:0" id="w-teller"></span></div>
+        <div class="lijst" id="w-lijst" style="margin-top:12px"></div>
+      </div>
+    </section>
+  </div>
+</div>
+<datalist id="b-pl"></datalist>
+<script>
+(function(){
+  var K='';try{K=localStorage.getItem('gids-key')||''}catch(e){}
+  var D=null,$=function(s){return document.querySelector(s)},esc=function(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})};
+  function api(body){return fetch('/api/beheer',{method:body?'POST':'GET',headers:{'x-key':K,'content-type':'application/json'},body:body?JSON.stringify(body):undefined}).then(function(r){return r.json().then(function(j){if(!r.ok)throw new Error(j.fout||('Fout '+r.status));return j})})}
+  function melding(el,t,fout){el.innerHTML='<div class="melding'+(fout?' fout':'')+'">'+esc(t)+'</div>';}
+  function laad(){return api().then(function(d){D=d;toon()})}
+  function inloggen(){K=$('#sleutel').value.trim()||K;laad().then(function(){try{localStorage.setItem('gids-key',K)}catch(e){}$('#inlog').hidden=true;$('#app').hidden=false}).catch(function(e){melding($('#in-m'),e.message,1)})}
+  $('#in').onclick=inloggen;$('#sleutel').onkeydown=function(e){if(e.key==='Enter')inloggen()};
+  if(K)laad().then(function(){$('#inlog').hidden=true;$('#app').hidden=false}).catch(function(){});
+  document.querySelectorAll('.tabs button').forEach(function(b){b.onclick=function(){document.querySelectorAll('.tabs button').forEach(function(x){x.classList.toggle('aan',x===b)});document.querySelectorAll('[data-p]').forEach(function(p){p.hidden=p.getAttribute('data-p')!==b.getAttribute('data-t')})}});
+
+  function toon(){
+    var tot=D.plaatsen.reduce(function(s,p){return s+(p.aantal||0)},0);
+    $('#stat').textContent=D.plaatsen.length+' plaatsen · '+tot.toLocaleString('nl-NL')+' basisvermeldingen · '+D.profielen.length+' klantprofielen · opslag: '+D.opslag;
+    $('#b-pl').innerHTML=D.plaatsen.map(function(p){return'<option value="'+esc(p.slug)+'">'+esc(p.naam)+'</option>'}).join('');
+    var f=$('#pf');if(!f.cat.options.length)f.cat.innerHTML=D.cats.map(function(c){return'<option value="'+c.slug+'">'+esc(c.naam)+'</option>'}).join('');
+    if(!$('#gem').options.length)$('#gem').innerHTML=D.gemeenten.map(function(g){return'<option>'+esc(g)+'</option>'}).join('');
+    lijstProfielen();toonFotos();
+    $('#imp-log').textContent='Gemeenten in de rij: '+(D.status.totaal||'-')+' · volgende nr. '+((D.status.volgende||0)+1)+'\n\n'+(D.status.log||[]).map(function(l){return new Date(l.t).toLocaleString('nl-NL')+'  '+l.g+'  '+(l.fout?'FOUT: '+l.fout:l.n+' bedrijven')}).join('\n');
+    $('#pl-lijst').innerHTML=D.plaatsen.map(function(p){return'<div class="it"><span><b>'+esc(p.naam)+'</b> <small>'+(p.aantal||0)+' bedrijven · '+new Date(p.bijgewerkt).toLocaleDateString('nl-NL')+'</small></span><a href="/plaats/'+p.slug+'" target="_blank">Bekijk</a></div>'}).join('')||'<p class="sub">Nog geen plaatsen. Start een import.</p>';
+    $('#nw-log').textContent=D.nlog?('Laatst: '+new Date(D.nlog.tijd).toLocaleString('nl-NL')+'\n'+D.nlog.log.join('\n')):'Nog niet opgehaald.';
+    $('#nw-lijst').innerHTML=D.nieuws.map(function(n){return'<div class="it"><span><b>'+esc(n.titel)+'</b><br><small>'+new Date(n.datum).toLocaleDateString('nl-NL')+' · '+esc(n.bron)+'</small></span><span class="rij" style="margin:0"><a href="/nieuws/'+esc(n.id)+'" target="_blank">Bekijk</a><button class="knop klein lijn" data-nw="'+esc(n.id)+'">Verwijder</button></span></div>'}).join('');
+  }
+
+  var TN={belasting:'Belasting & btw',loon:'Loon & personeelskosten',energie:'Energie & duurzaamheid',geld:'Subsidies & financiering',bouw:'Bouw & wonen',werk:'Personeel & werk',handel:'Handel & export',digitaal:'Digitaal & innovatie',veilig:'Veiligheid & crisis',ondernemer:'Ondernemen & winkels',algemeen:'Algemeen (overige berichten)'};
+  function toonFotos(){
+    $('#tf-lijst').innerHTML=D.themas.map(function(t){var l=(D.themaFotos||{})[t]||[];return'<div class="paneel"><h2>'+esc(TN[t]||t)+'</h2><div class="rij" style="margin:0 0 12px">'+(l.map(function(f,i){return'<span style="position:relative;display:inline-block"><img src="'+esc(f.klein||f.url)+'" style="width:160px;height:106px;object-fit:cover;border-radius:10px"><button class="knop klein lijn" style="position:absolute;right:6px;top:6px;background:#fff" data-tfweg="'+t+'|'+i+'">×</button></span>'}).join('')||'<span class="sub" style="margin:0">Nog geen foto\'s. Berichten krijgen dan een gekleurde illustratie.</span>')+'</div><label style="max-width:360px">Foto toevoegen<input type="file" accept="image/*" data-tfup="'+t+'"></label></div>'}).join('');
+  }
+  document.addEventListener('click',function(e){var t=e.target;if(t.dataset.tfweg){var x=t.dataset.tfweg.split('|');api({actie:'thema-foto',thema:x[0],weg:x[1]}).then(laad)}});
+  document.addEventListener('change',function(e){var inp=e.target;if(!inp.dataset||!inp.dataset.tfup)return;var file=inp.files[0];if(!file)return;var r=new FileReader();r.onload=function(){api({actie:'afbeelding',data:r.result}).then(function(j){return api({actie:'thema-foto',thema:inp.dataset.tfup,url:j.url})}).then(laad).catch(function(x){alert(x.message)})};r.readAsDataURL(file)});
+  $('#tf-pexels').onclick=function(){$('#tf-m').textContent='Bezig…';api({actie:'thema-pexels'}).then(function(){$('#tf-m').textContent='Klaar. Bij de volgende nieuwsronde krijgen alle berichten een foto.';laad()}).catch(function(x){$('#tf-m').textContent=x.message})};
+  function lijstProfielen(){
+    var q=($('#pzoek').value||'').toLowerCase();
+    $('#plijst').innerHTML=D.profielen.filter(function(p){return!q||(p.naam+' '+p.plaats).toLowerCase().indexOf(q)>=0}).map(function(p){
+      var verlopen=p.tot&&p.tot<new Date().toISOString().slice(0,10);
+      return'<div class="it"><span>'+(p.logo?'<img class="vb" src="'+esc(p.logo)+'" style="width:40px;height:40px;display:inline-block;vertical-align:middle;margin-right:10px">':'')+'<b>'+esc(p.naam)+'</b> <small>'+esc(p.plaatsNaam||p.plaats)+'</small> <span class="tag'+(p.pakket==='plus'?' plus':'')+'">'+p.pakket+'</span>'+(p.actief===false||verlopen?' <span class="tag uit">'+(verlopen?'verlopen':'inactief')+'</span>':'')+'</span><span class="rij" style="margin:0"><a href="/bedrijf/'+p.plaats+'/'+p.id+'" target="_blank">Bekijk</a><button class="knop klein licht" data-bew="'+p.id+'">Bewerk</button></span></div>'}).join('')||'<p class="sub">Nog geen klantprofielen.</p>';
+  }
+  $('#pzoek').oninput=lijstProfielen;
+  document.addEventListener('click',function(e){
+    var t=e.target;
+    if(t.dataset.bew){var p=D.profielen.find(function(x){return x.id===t.dataset.bew}),f=$('#pf');['id','osm','naam','cat','plaats','straat','nr','pc','woonplaats','tel','email','web','kort','omschrijving','diensten','open','logo','foto','pakket','tot','klant'].forEach(function(k){if(f[k])f[k].value=p[k]||''});f.uitgelicht.checked=!!p.uitgelicht;f.actief.checked=p.actief!==false;$('#f-titel').textContent='Profiel bewerken: '+p.naam;window.scrollTo(0,0)}
+    if(t.dataset.nw){if(!confirm('Bericht verwijderen?'))return;api({actie:'nieuws-weg',id:t.dataset.nw}).then(laad)}
+    if(t.dataset.weg){if(!confirm('Vermelding van '+t.dataset.naam+' verwijderen?'))return;api({actie:'bedrijf-weg',id:t.dataset.weg,plaats:$('#w-pl').value}).then(function(){t.closest('.it').remove();laad()})}
+    if(t.dataset.koppel){var f2=$('#pf'),b=JSON.parse(t.dataset.koppel);f2.osm.value=b.id;['naam','straat','nr','pc','woonplaats','tel','web','open'].forEach(function(k){if(!f2[k].value&&b[k])f2[k].value=b[k]});if(b.cat)f2.cat.value=b.cat;$('#koppel-t').textContent='Gekoppeld aan '+b.naam+' (basisvermelding wordt verborgen)';$('#koppel-l').innerHTML=''}
+  });
+  $('#leeg').onclick=function(){$('#pf').reset();$('#pf').id.value='';$('#pf').osm.value='';$('#f-titel').textContent='Nieuw klantprofiel';$('#koppel-t').textContent=''};
+  $('#koppel').onclick=function(){var f=$('#pf');if(!f.plaats.value){melding($('#pf-m'),'Vul eerst de plaats in.',1);return}api({actie:'zoek-basis',plaats:f.plaats.value,q:f.naam.value}).then(function(r){$('#koppel-l').innerHTML=r.resultaten.map(function(b){return'<div class="it"><span><b>'+esc(b.naam)+'</b> <small>'+esc([b.straat,b.nr,b.woonplaats].filter(Boolean).join(' '))+'</small></span><button class="knop klein" data-koppel="'+esc(JSON.stringify(b))+'">Koppelen</button></div>'}).join('')||'<p class="sub">Niets gevonden.</p>'})};
+  document.querySelectorAll('[data-img]').forEach(function(inp){inp.onchange=function(){var file=inp.files[0];if(!file)return;var r=new FileReader();r.onload=function(){api({actie:'afbeelding',data:r.result}).then(function(j){$('#pf')[inp.dataset.img].value=j.url;melding($('#pf-m'),'Afbeelding geüpload.')}).catch(function(e){melding($('#pf-m'),e.message,1)})};r.readAsDataURL(file)}});
+  $('#pf').onsubmit=function(e){e.preventDefault();var f=e.target,p={};['id','osm','naam','cat','plaats','straat','nr','pc','woonplaats','tel','email','web','kort','omschrijving','diensten','open','logo','foto','pakket','tot','klant'].forEach(function(k){p[k]=f[k].value});p.uitgelicht=f.uitgelicht.checked;p.actief=f.actief.checked;
+    api({actie:'profiel',profiel:p}).then(function(j){f.id.value=j.id;melding($('#pf-m'),'Opgeslagen.');$('#pf-m').insertAdjacentHTML('beforeend',' <a href="'+j.url+'" target="_blank">Bekijk profiel</a>');return laad()}).catch(function(e){melding($('#pf-m'),e.message,1)})};
+  $('#imp1').onclick=function(){api({actie:'importeer',gemeente:$('#gem').value}).then(function(j){melding($('#imp-m'),j.ok?'Import gestart. Ververs over 1 à 2 minuten.':'Kon import niet starten ('+j.status+').',!j.ok)})};
+  $('#impv').onclick=function(){api({actie:'importeer'}).then(function(j){melding($('#imp-m'),j.ok?'Volgende ronde gestart.':'Mislukt ('+j.status+').',!j.ok)})};
+  $('#nw-haal').onclick=function(){api({actie:'nieuws-ophalen'}).then(function(j){melding($('#nw-m'),j.ok?'Gestart. Nieuws en beelden staan er over 1 à 3 minuten.':'Mislukt ('+j.status+').',!j.ok)}).catch(function(e){melding($('#nw-m'),e.message,1)})};
+  $('#nwf').onsubmit=function(e){e.preventDefault();api({actie:'nieuws-eigen',titel:e.target.titel.value,tekst:e.target.tekst.value}).then(function(){e.target.reset();melding($('#nwf-m'),'Geplaatst.');laad()}).catch(function(x){melding($('#nwf-m'),x.message,1)})};
+  $('#w-zoek').onclick=function(){api({actie:'zoek-basis',plaats:$('#w-pl').value,q:$('#w-q').value}).then(function(r){$('#w-teller').textContent=r.resultaten.length+' gevonden';$('#w-lijst').innerHTML=r.resultaten.map(function(b){return'<div class="it"><span><b>'+esc(b.naam)+'</b> <small>'+esc([b.straat,b.nr,b.woonplaats].filter(Boolean).join(' '))+' · '+b.id+'</small></span><button class="knop klein lijn" data-weg="'+b.id+'" data-naam="'+esc(b.naam)+'">Verwijderen</button></div>'}).join('')})};
+})();
+</script>
+</body>
+</html>
